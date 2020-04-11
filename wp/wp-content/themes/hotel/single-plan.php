@@ -2,57 +2,74 @@
 
     <div class="contentsWrap">
         <div class="mainContents">
-            <article class="page">
+            <?php
+            if (have_posts()):
+                while (have_posts()): the_post();
+            ?>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('page'); ?>>
                 <h1 class="type-A">宿泊プラン</h1>
-                <h2 class="title type-B"><span>デラックス・ツインルーム</span></h2>
+                <h2 class="title type-B"><span><?php the_title(); ?></span></h2>
                 <div class="plan">
                     <div class="left">
-                        <img src="../../../WP_sample/Chap5/Sec02/html/images/dummy/320x210.png" height="210" width="320" alt="">
+                        <?php
+                        $image = get_field('picture');
+                        $url = $image['sizes']['medium'];
+                        $width = $image['sizes']['medium-width'];
+                        $height = $image['sizes']['medium-height'];
+                        ?>
+                        <img src="<?php echo $url; ?>" height="<?php echo $height; ?>" width="<?php echo $width; ?>" alt="">
                     </div>
                     <div class="right">
-                        <p>バルコニー付きの快適な広さの室内スペース。ファミリー、ご友人での滞在にオススメです。</p>   
+                        <?php the_content(); ?>
                     </div>
                 </div>
                 <div class="plan">
                     <div class="left">
                         <dl>
                             <dt>価格</dt>
-                            <dd><em>12,000円/泊</em></dd>
+                            <dd><em><?php echo number_format(get_field('price')); ?></em></dd>
                         </dl>
                         <dl>
                             <dt>ベッド</dt>
-                            <dd>ダブル</dd>
+                            <dd>
+                                <?php
+                                $bed = get_field('bed');
+                                foreach ($bed as $key => $value) {
+                                    echo $value;
+                                    if ($value !== end($bed)) {
+                                        echo '<br>';
+                                    }
+                                }
+                                ?>
+                            </dd>
                         </dl>
                     </div>
                     <div class="right">
                         <dl>
                             <dt>チェックイン</dt>
-                            <dd>14:00～20:00</dd>
+                            <dd><?php echo nl2br(get_field('checkin')); ?></dd>
                         </dl>
                         <dl>
                             <dt>朝食</dt>
-                            <dd>あり</dd>
+                            <dd>
+                                <?php if (get_field('food')): ?>
+                                    あり
+                                <?php else: ?>
+                                    なし
+                                <?php endif; ?>
+                            </dd>
                         </dl>
                     </div>
                 </div>
             </article><!-- /.page -->
+            <?php
+                endwhile;
+            endif;
+            ?>
         </div><!-- /.mainContents -->
 
         <aside class="subContents">
-            <p class="bnr"><a href="contact.html"><img src="../../../WP_sample/Chap5/Sec02/html/images/common/bnr_contact01.png" height="183" width="300" alt="宿泊のお問い合わせ"></a></p>
-            <div class="wrapper">
-                <section class="socialBanners">
-                    <h1 class="hidden">関連バナー</h1>
-                    <div class="banners">
-                        <ul>
-                            <li><a href="" target="_blank"><img src="../../../WP_sample/Chap5/Sec02/html/images/common/bnr_fb01.png" height="60" width="290" alt=""></a></li>
-                            <li><a href="" target="_blank"><img src="../../../WP_sample/Chap5/Sec02/html/images/common/bnr_tw01.png" height="60" width="290" alt=""></a></li>
-                            <li><a href="" target="_blank"><img src="../../../WP_sample/Chap5/Sec02/html/images/common/bnr_rss01.png" height="60" width="290" alt=""></a></li>
-                        </ul>
-                    </div>
-                </section><!-- /.socialBanners -->
-            </div><!-- /.wrapper -->
-
+            <?php get_sidebar('beds'); ?>
         </aside><!-- /.subContents -->
     </div><!-- /.contentsWrap -->
 
